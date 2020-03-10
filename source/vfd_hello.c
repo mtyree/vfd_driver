@@ -1,4 +1,9 @@
 #define F_CPU 16000000
+#define VFD_4_BIT
+#define VFD_DB4 2
+#define VFD_DB5 3
+#define VFD_DB6 4
+#define VFD_DB7 6
 #include <stdio.h>
 #include <avr/io.h>
 #include <util/delay.h>
@@ -9,16 +14,17 @@ FILE vfd_out = FDEV_SETUP_STREAM(vfd_putc, NULL, _FDEV_SETUP_WRITE);
 int main() {
 	// Initialize PORTB and PORTD as outputs
 	DDRB = 0x07;
-	DDRD = 0xFF;
+	DDRD = VFD_IO_MASK;
 	// Initialize PORTB and PORTD
-	PORTB = 0xF8;
+	PORTB = 0x00;
 	PORTD = 0x00;
 	// Set 8-bit bus mode
+	_delay_ms(50);
 	VFD_FUNCTION_SET();
 	// Set brightness
-	write_rs(0x03);
+	VFD_BRIGHT_25();
 	// Turn dislay on, cursor off
-	write_rs_n(0x0F);
+	VFD_DISPLAY_SET(VFD_DISPLAY_ON, VFD_CURSOR_OFF, VFD_BLINK_OFF);
 
 	// Clear display
 	VFD_DISPLAY_CLEAR();
@@ -29,14 +35,11 @@ int main() {
 	// Setup output stream
 	stdout = &vfd_out;
 
-	uint8_t read_val;
+	// uint8_t read_val;
 
-	for (;;) {
-		VFD_CURSOR_HOME();
-		printf("read value = %0x", read_val);
-		read_val = vfd_read_adr();
-		_delay_ms(1000);
-	};
+	printf("hello");
+
+	for (;;) {};
 
 	return 0;
 }

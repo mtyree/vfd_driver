@@ -1,4 +1,5 @@
 #define F_CPU 16000000
+#define VFD_4_BIT
 #define ONE_SECOND 54687
 #include <stdio.h>
 #include <avr/io.h>
@@ -11,6 +12,9 @@ volatile uint32_t sys_seconds;
 
 ISR(TIMER1_COMPA_vect) {
 	sys_seconds = sys_seconds + 1;
+	printf("Elapsed Seconds");
+	VFD_WRITE_ADR(VFD_L2_START);
+	printf("= %d", sys_seconds);
 }
 
 void init() {
@@ -50,15 +54,7 @@ int main() {
 	init();
 
 	sei();
-	for (;;) {
-		cli();
-		VFD_CURSOR_HOME();
-		printf("Elapsed Seconds");
-		VFD_WRITE_ADR(VFD_L2_START);
-		printf("= %d", sys_seconds);
-		sei();
-		_delay_ms(500);
-	};
+	for (;;) {};
 
 	return 0;
 }
