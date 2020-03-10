@@ -1,0 +1,5 @@
+NAME=$1
+avr-gcc -g -mmcu=atmega328p -c "../source/$NAME.c"
+avr-gcc -g -mmcu=atmega328p -o "$NAME.elf" "$NAME.o"
+avr-objcopy -j .text -j .data -O ihex "$NAME.elf" "$NAME.hex"
+avrdude -c arduino -p m328p -P COM3 -D -U "$NAME.hex"
